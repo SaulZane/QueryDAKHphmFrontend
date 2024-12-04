@@ -31,4 +31,20 @@ export async function getVerificationCode() {
         console.error('获取验证码失败:', error);
         throw error;
     }
+}
+
+export async function validateIdCard(sfzmhm) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/validate_code`, {
+            sfzmhm: sfzmhm
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('身份证验证失败:', error);
+        throw error;
+    }
 } 

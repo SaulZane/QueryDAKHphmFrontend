@@ -1,10 +1,27 @@
 <script>
-    import { queryVehicleInfo } from '$lib/api';
+    import { queryVehicleInfo, validateIdCard } from '$lib/api';
+    import { faUser, faUserXmark } from '@fortawesome/free-solid-svg-icons';
+    import Fa from 'svelte-fa';
 
     let sfzmhm = '';
     let input_code = '';
     let queryResult = null;
     let error = null;
+    let isValidId = 0;
+
+    async function validateId() {
+        if (sfzmhm.length === 18) {
+            try {
+                const response = await validateIdCard(sfzmhm);
+                isValidId = response;
+            } catch (err) {
+                console.error('身份证验证失败:', err);
+                isValidId = 0;
+            }
+        } else {
+            isValidId = 0;
+        }
+    }
 
     async function handleQuery() {
         try {
@@ -14,6 +31,12 @@
             error = "系统异常，请联系张硕";
             queryResult = null;
         }
+    }
+
+    $: if (sfzmhm.length === 18) {
+        validateId();
+    } else {
+        isValidId = 0;
     }
 </script>
 
@@ -27,6 +50,13 @@
             id="sfzmhm" 
             bind:value={sfzmhm}
         >
+        <div style="width: 20px; text-align: center;">
+            {#if isValidId === 1}
+                <Fa icon={faUser} color="green"/>
+            {:else if isValidId === 2}
+                <Fa icon={faUserXmark} color="red"/>
+            {/if}
+        </div>
         <label for="input_code" class="mb-0">授权码</label>
         <input 
             type="text" 
@@ -41,6 +71,7 @@
         >
             查询
         </button>
+        
     </div>
 
     {#if error}
