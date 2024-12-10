@@ -19,6 +19,23 @@ export async function queryVehicleInfo(sfzmhm, input_code) {
     }
 }
 
+export async function queryClsbdhInfo(clsbdh, input_code) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/checkclsbdh`, {
+            clsbdh: clsbdh,
+            input_code: input_code
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('查询失败:', error);
+        throw error;
+    }
+}
+
 export async function getVerificationCode() {
     try {
         const response = await axios.get(`${API_BASE_URL}/rd`);
@@ -48,3 +65,4 @@ export async function validateIdCard(sfzmhm) {
         throw error;
     }
 } 
+

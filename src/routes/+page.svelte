@@ -1,5 +1,5 @@
 <script>
-    import { queryVehicleInfo, validateIdCard } from '$lib/api';
+    import { queryVehicleInfo, validateIdCard ,queryClsbdhInfo} from '$lib/api';
     import { faUser, faUserXmark } from '@fortawesome/free-solid-svg-icons';
     import Fa from 'svelte-fa';
 
@@ -8,6 +8,7 @@
     let queryResult = null;
     let error = null;
     let isValidId = 0;
+    let clsbdh = '';
 
     async function validateId() {
         if (sfzmhm.length === 18) {
@@ -24,13 +25,27 @@
     }
 
     async function handleQuery() {
+        
+
         try {
             error = null;
-            queryResult = await queryVehicleInfo(sfzmhm, input_code);
+            queryResult = null;
+            if (sfzmhm && clsbdh) {
+            error = "请勿同时输入身份证号和车架号查询";
+            }
+            else{   
+            if (sfzmhm) {
+                queryResult = await queryVehicleInfo(sfzmhm, input_code);
+            }
+            if (clsbdh) {
+                queryResult = await queryClsbdhInfo(clsbdh, input_code);
+            }}
         } catch (err) {
             error = "系统异常，请联系张硕";
             queryResult = null;
         }
+        input_code='';
+       
     }
 
     $: if (sfzmhm.length === 18) {
@@ -57,9 +72,17 @@
                 <Fa icon={faUserXmark} color="red"/>
             {/if}
         </div>
-        <label for="input_code" class="mb-0">授权码</label>
+        <label for="clsbdh" class="mb-0">车辆识别代号</label>
         <input 
             type="text" 
+            class="form-control" 
+            style="width: 300px;"
+            id="clsbdh" 
+            bind:value={clsbdh}
+        >
+        <label for="input_code" class="mb-0">授权码</label>
+        <input 
+            type="password" 
             class="form-control" 
             style="width: 100px;"
             id="input_code" 
@@ -85,7 +108,7 @@
     {#if queryResult && queryResult.status === "success" && queryResult.data === "验证码错误"}
         <div class="d-flex justify-content-center mt-3">
             <span class="alert alert-warning" role="alert">
-                验证码错误，请重新输入！
+                授权码错误，请重新输入！
             </span>
         </div>
     {:else if queryResult && queryResult.status === "success" && queryResult.data === "null"}
