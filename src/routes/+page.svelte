@@ -1,7 +1,9 @@
 <script>
-    import { queryVehicleInfo, validateIdCard ,queryClsbdhInfo} from '$lib/api';
+    import { queryVehicleInfo, validateIdCard ,queryClsbdhInfo } from '$lib/api';
     import { faUser, faUserXmark } from '@fortawesome/free-solid-svg-icons';
     import Fa from 'svelte-fa';
+    import { hpzl, zt, dybj } from '$lib/zl';
+    import * as XLSX from 'xlsx';
 
     let sfzmhm = '';
     let input_code = '';
@@ -53,6 +55,32 @@
     } else {
         isValidId = 0;
     }
+
+    function exportToExcel() {
+        if (!queryResult?.data || !Array.isArray(queryResult.data)) return;
+        
+        // Transform data for Excel
+        const excelData = queryResult.data.map(item => ({
+            '号牌种类': hpzl[item.hpzl],
+            '号牌号码': item.hphm,
+            '所有人': item.syr,
+            '车辆识别代号': item.clsbdh,
+            '抵押标记': dybj[item.dybj],
+            '状态': item.zt ? item.zt.split('').map(letter => zt[letter] || '未知').join('、') : '错误'
+        }));
+
+        // Create worksheet
+        const ws = XLSX.utils.json_to_sheet(excelData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "查询结果");
+
+        // Generate filename
+        const searchTerm = sfzmhm || clsbdh;
+        const filename = `${searchTerm}的查询结果.xlsx`;
+
+        // Export file
+        XLSX.writeFile(wb, filename);
+    }
 </script>
 
 <div class="container-fluid mt-5">
@@ -95,6 +123,14 @@
             查询
         </button>
         
+        {#if queryResult && queryResult.data && Array.isArray(queryResult.data) && queryResult.data.length > 0}
+            <button 
+                class="btn btn-success" 
+                on:click={exportToExcel}
+            >
+                导出Excel
+            </button>
+        {/if}
     </div>
 
     {#if error}
@@ -126,7 +162,7 @@
                             <th class="fw-bold text-center">号牌种类</th>
                             <th class="fw-bold text-center">号牌号码</th>
                             <th class="fw-bold text-center">所有人</th>
-                            <th class="fw-bold text-center">车辆识别代号</th>
+                            <th class="fw-bold text-center">车辆识别代号<small>（部分加密）</small></th>
                             <th class="fw-bold text-center">抵押标记</th>
                             <th class="fw-bold text-center">状态</th>
                         </tr>
@@ -134,12 +170,18 @@
                     <tbody class="bg-white">
                         {#each queryResult.data as item}
                             <tr class="align-middle">
-                                <td class="text-center">{item.hpzl}</td>
+                                <td class="text-center">{hpzl[item.hpzl]}</td>
                                 <td class="text-center">{item.hphm}</td>
                                 <td class="text-center">{item.syr}</td>
-                                <td class="text-center">{item.clsbdh}</td>
-                                <td class="text-center">{item.dybj}</td>
-                                <td class="text-center">{item.zt}</td>
+                                <td class="text-center">{item.clsbdh.slice(0, 6) + '***' + item.clsbdh.slice(-6)}</td>
+                                <td class="text-center">{dybj[item.dybj]}</td>
+                                <td class="text-center">
+                                    {#if item.zt}
+                                        {item.zt.split('').map(letter => zt[letter] || '未知').join('、')}
+                                    {:else}
+                                        错误
+                                    {/if}
+                                </td>
                             </tr>
                         {/each}
                     </tbody>

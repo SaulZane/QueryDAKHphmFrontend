@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:8002';
+const API_BASE_URL = 'http://192.168.1.111:8002';
 
 export async function queryVehicleInfo(sfzmhm, input_code) {
     try {
