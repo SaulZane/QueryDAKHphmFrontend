@@ -1,4 +1,6 @@
 <script>
+    import 'core-js/stable';
+    import 'regenerator-runtime/runtime';
     import { queryVehicleInfo, validateIdCard ,queryClsbdhInfo } from '$lib/api';
     import { faUser, faUserXmark } from '@fortawesome/free-solid-svg-icons';
     import Fa from 'svelte-fa';
@@ -28,27 +30,23 @@
     }
 
     async function handleQuery() {
-        
-
         try {
             error = null;
             queryResult = null;
             if (sfzmhm && clsbdh) {
-            error = "请勿同时输入身份证号和车架号查询";
+                error = "请勿同时输入身份证号和车架号查询";
+            } else {   
+                if (sfzmhm) {
+                    queryResult = await queryVehicleInfo(sfzmhm, input_code);
+                }
+                if (clsbdh) {
+                    queryResult = await queryClsbdhInfo(clsbdh, input_code);
+                }
             }
-            else{   
-            if (sfzmhm) {
-                queryResult = await queryVehicleInfo(sfzmhm, input_code);
-            }
-            if (clsbdh) {
-                queryResult = await queryClsbdhInfo(clsbdh, input_code);
-            }}
         } catch (err) {
             error = "系统异常，请联系张硕";
             queryResult = null;
         }
-        // input_code='';
-       
     }
 
     $: if (sfzmhm.length === 18) {
@@ -129,7 +127,7 @@
         <div style="width: 100px; text-align: center;">
         {#if queryResult && queryResult.data && Array.isArray(queryResult.data) && queryResult.data.length > 0}
             <button 
-                class="btn btn-success" 
+                class="btn btn-success"
                 on:click={exportToExcel}
             >
                 导出Excel
@@ -198,7 +196,7 @@
       <!-- 底部版权声明 -->
   <div class="fixed-bottom text-center mb-2">
     <small class="text-muted">
-      &copy;2024  | 此网站属于业务监督科<b>张硕</b>唯一所有 | 仅授权业务监督科或档案科特定人员授权人员查询使用 | <b style="color: red;">网站查询全部有日志审计记录，请按需使用！</b> | 如遇故障请联系 13920148266 | <b>保留所有权利</b>
+      &copy;2024  | 此网站属于业务监督科<b>张硕</b>唯一所有 | 仅授权业务监督科或档案科特定授权人员查询使用 | <b style="color: red;">网站查询全部有日志审计记录，请按需使用！</b> | 如遇故障请联系 13920148266 | <b>保留所有权利</b>
       <br />
       <b style="color: red;">重要安全提示：授权码仅可向已授权使用该网站人员提供。向非授权人员泄露授权码行为为严重违反数据安全行为，网站作者对泄露授权码产生的安全事件不负责，其责任由泄露授权码人员承担！</b>
       <br />

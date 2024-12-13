@@ -3,8 +3,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit()],
-	server: {
-		port: 5175,
-		cors: true
+	optimizeDeps: {
+		include: ['core-js', 'regenerator-runtime']
+	},
+	build: {
+		target: ['es2015', 'chrome58', 'firefox57', 'safari11', 'edge16']
 	}
-})
+});

@@ -1,8 +1,23 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="zh">
 	<head>
 		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			// 检测是否为IE浏览器
+			function isIE() {
+				var ua = window.navigator.userAgent;
+				return ua.indexOf('MSIE ') > -1 || ua.indexOf('Trident/') > -1;
+			}
+			
+			// 如果是IE浏览器，显示提示信息并阻止访问
+			if (isIE()) {
+				alert('本网站不支持IE浏览器访问！\n\n请使用Chrome58、Firefox57、Safari11、Edge16或更现代浏览器。\n\n如有疑问请联系张硕 13920148266');
+				document.execCommand("Stop");
+				window.location.href = 'about:blank';
+			}
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
