@@ -27,7 +27,13 @@
             <div class="code">{verificationCode}</div>
         </div>
     {/if}
+    
 </div>
+<div class="fixed-bottom text-center mb-2">
+    <small class="text-muted">
+        <b style="color: red;">重要安全提示：授权码仅可向已授权使用该网站人员提供。向非授权人员泄露授权码行为为严重违反数据安全行为，网站作者对泄露授权码产生的安全事件不负责，其责任由泄露授权码人员承担！网站查询全部有日志审计记录，请按需使用！</b>
+      
+  </div>
 
 <style>
     .container {
