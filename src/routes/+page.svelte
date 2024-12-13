@@ -47,7 +47,7 @@
             error = "系统异常，请联系张硕";
             queryResult = null;
         }
-        input_code='';
+        // input_code='';
        
     }
 
@@ -84,7 +84,7 @@
     }
 </script>
 
-<GradientBar intervalTime={3000} />
+<GradientBar intervalTime={5000} />
 
 <div class="container-fluid mt-5">
     <h1  style="padding-bottom: 20px;"class="text-center">档案基本信息查询</h1>
@@ -126,7 +126,7 @@
         >
             查询
         </button>
-        
+        <div style="width: 100px; text-align: center;">
         {#if queryResult && queryResult.data && Array.isArray(queryResult.data) && queryResult.data.length > 0}
             <button 
                 class="btn btn-success" 
@@ -135,6 +135,7 @@
                 导出Excel
             </button>
         {/if}
+     </div>
     </div>
 
     {#if error}
