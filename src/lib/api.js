@@ -65,4 +65,16 @@ export async function validateIdCard(sfzmhm) {
         throw error;
     }
 } 
+export async function queryHistoryInfo(sfzmhm, input_code) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/check_history`, {
+            sfzmhm: sfzmhm,
+            input_code: input_code
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('历史车查询失败:', error);
+        throw error;
+    }
+}
 
