@@ -7,6 +7,7 @@
     import { hpzl, zt, dybj, zrbj } from '$lib/zl';
     import * as XLSX from 'xlsx';
     import GradientBar from '$lib/components/GradientBar.svelte';
+    import { onMount } from 'svelte';
 
     let sfzmhm = '';
     let input_code = '';
@@ -123,8 +124,8 @@
                 '现号牌号码': item.xhphm,
                 '现所有人': item.xsyr,
                 '现状态': item.xzt ? item.xzt.split('').map(letter => zt[letter] || '未知').join('、') : '错误',
-                '转入标记': item.zrbj,
-                '转出地': item.zcd,
+                // '转入标记': item.zrbj,
+                // '转出地': item.zcd,
                 '转入地': item.zrd
             }));
             filename = `${sfzmhm}_历史车辆查询结果.xlsx`;
@@ -142,17 +143,39 @@
         const tableDiv = document.querySelector('.table-responsive');
         const copyrightDiv = document.querySelector('.copyright-footer');
         
-        if (tableDiv && copyrightDiv) {
+        if (!tableDiv) {
+            showCopyright = true;
+            return;
+        }
+        
+        if (copyrightDiv) {
             const tableRect = tableDiv.getBoundingClientRect();
-            const copyrightRect = copyrightDiv.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
             
-            showCopyright = tableRect.bottom + 50 < copyrightRect.top;
+            if (tableRect.bottom + 150 < windowHeight) {
+                showCopyright = true;
+            } else {
+                const copyrightRect = copyrightDiv.getBoundingClientRect();
+                showCopyright = tableRect.bottom + 50 < copyrightRect.top;
+            }
         }
     }
 
-    $: if (queryResult?.data || queryHistoryResult) {
-        setTimeout(checkOverlap, 100);
+    $: {
+        if (queryResult?.data || queryHistoryResult || error || queryResult?.data === "验证码错误" || 
+            queryResult?.data === "null" || queryHistoryResult === "null") {
+            setTimeout(checkOverlap, 100);
+        } else {
+            showCopyright = true;
+        }
     }
+
+    onMount(() => {
+        window.addEventListener('resize', checkOverlap);
+        return () => {
+            window.removeEventListener('resize', checkOverlap);
+        };
+    });
 </script>
 
 <GradientBar intervalTime={5000} />
@@ -224,7 +247,7 @@
     {:else if queryResult?.data === "验证码错误"}
         <div class="d-flex justify-content-center mt-3">
             <span class="alert alert-warning" role="alert">
-                授权码错误，请重新输入！
+                权码错误，请重新输入
             </span>
         </div>
     {:else if queryResult?.data === "null"}
