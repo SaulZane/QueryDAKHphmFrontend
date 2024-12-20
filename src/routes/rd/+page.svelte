@@ -56,7 +56,6 @@
         font-weight: bold;
         letter-spacing: 4px;
         margin: 1rem 0;
-        color: #333;
     }
 
 

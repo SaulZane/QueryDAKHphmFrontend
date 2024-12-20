@@ -265,10 +265,10 @@
                         <tr>
                             <th class="fw-bold text-center small">号牌种类</th>
                             <th class="fw-bold text-center small">车辆品牌</th>
-                            <th class="fw-bold text-center small">转入前号牌</th>
-                            <th class="fw-bold text-center small">转入前所有人</th>
-                            <th class="fw-bold text-center small">转入后号牌</th>
-                            <th class="fw-bold text-center small">转入后所有人</th>
+                            <th class="fw-bold text-center small">转让前号牌</th>
+                            <th class="fw-bold text-center small">转让前所有人</th>
+                            <th class="fw-bold text-center small">转让后号牌</th>
+                            <th class="fw-bold text-center small">转让后所有人</th>
                             <th class="fw-bold text-center small">现号牌号码</th>
                             <th class="fw-bold text-center small">现所有人</th>
                             <th class="fw-bold text-center small">现状态</th>
