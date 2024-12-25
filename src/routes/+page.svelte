@@ -4,7 +4,7 @@
     import { queryVehicleInfo, validateIdCard ,queryClsbdhInfo, queryHistoryInfo } from '$lib/api';
     import { faUser, faUserXmark } from '@fortawesome/free-solid-svg-icons';
     import Fa from 'svelte-fa';
-    import { hpzl, zt, dybj, zrbj } from '$lib/zl';
+    import { hpzl, zt, dybj, zrbj ,cllx} from '$lib/zl';
     import * as XLSX from 'xlsx';
     import GradientBar from '$lib/components/GradientBar.svelte';
     import { onMount } from 'svelte';
@@ -107,8 +107,9 @@
             excelData = queryResult.data.map(item => ({
                 '号牌种类': hpzl[item.hpzl],
                 '号牌号码': item.hphm,
+                '车辆类型': cllx[item.cllx],
                 '所有人': item.syr,
-                '车辆识别代号': item.clsbdh,
+                '车辆识别代号': item.clsbdh.slice(0, 6) + '***' + item.clsbdh.slice(-6),
                 '抵押标记': dybj[item.dybj],
                 '状态': item.zt ? item.zt.split('').map(letter => zt[letter] || '未知').join('、') : '错误'
             }));
@@ -117,6 +118,7 @@
             excelData = queryHistoryResult.map(item => ({
                 '号牌种类': hpzl[item.hpzl],
                 '车辆品牌': item.clpp1,
+                '车辆类型': cllx[item.cllx],
                 '转入前号牌': item.zrqhp,
                 '转入前所有人': item.zrqsyr,
                 '转入后号牌': item.zrhhp,
@@ -270,6 +272,7 @@
                         <tr>
                             <th class="fw-bold text-center">号牌种类</th>
                             <th class="fw-bold text-center">号牌号码</th>
+                            <th class="fw-bold text-center">车辆类型</th>
                             <th class="fw-bold text-center">所有人</th>
                             <th class="fw-bold text-center">车辆识别代号<small>（部分加密）</small></th>
                             <th class="fw-bold text-center">抵押标记</th>
@@ -281,6 +284,7 @@
                             <tr class="align-middle">
                                 <td class="text-center">{hpzl[item.hpzl]}</td>
                                 <td class="text-center">{item.hphm}</td>
+                                <td class="text-center">{cllx[item.cllx]}</td>
                                 <td class="text-center">{item.syr}</td>
                                 <td class="text-center">{item.clsbdh.slice(0, 6) + '***' + item.clsbdh.slice(-6)}</td>
                                 <td class="text-center">{dybj[item.dybj]}</td>
@@ -305,6 +309,7 @@
                         <tr>
                             <th class="fw-bold text-center small">号牌种类</th>
                             <th class="fw-bold text-center small">车辆品牌</th>
+                            <th class="fw-bold text-center small">车辆类型</th>
                             <th class="fw-bold text-center small">转让前号牌</th>
                             <th class="fw-bold text-center small">转让前所有人</th>
                             <th class="fw-bold text-center small">转让后号牌</th>
@@ -322,6 +327,7 @@
                             <tr class="align-middle">
                                 <td class="text-center small">{hpzl[item.hpzl]}</td>
                                 <td class="text-center small">{item.clpp1}</td>
+                                <td class="text-center small">{cllx[item.cllx]}</td>
                                 <td class="text-center small">{item.zrqhp}</td>
                                 <td class="text-center small">{item.zrqsyr}</td>
                                 <td class="text-center small">{item.zrhhp}</td>
